@@ -5,3 +5,4 @@ mapping.json
 configs/entities.local.yaml
 .agent-privacy-guard/entities.local.yaml
 .agent-privacy-guard/mapping.json
+.DS_Store

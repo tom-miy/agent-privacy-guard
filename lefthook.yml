@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: false
+  commands:
+    sensitive-files:
+      run: scripts/check-sensitive-files.sh
+    tests:
+      run: go test ./...
+    validate:
+      run: go run ./cmd/agent-privacy-guard validate

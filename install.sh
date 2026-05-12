@@ -138,6 +138,7 @@ Next steps:
   2. Create $install_dir/entities.local.yaml from $entity_example_path or generate it from an encrypted source.
   3. Wire $prehook_path into your agent's outbound prompt hook.
   4. Wire $posthook_path into your agent's response hook.
+  5. If this repository uses Lefthook, add a pre-commit command that blocks $install_dir/entities.local.yaml and $mapping_path from being committed.
 
 Smoke test:
   echo 'AcmeBank token=example-secret-value-1234' | $prehook_path

@@ -390,6 +390,9 @@ Detected:
 | `install.sh` | 対象 repository に `.agent-privacy-guard/` を作成する installer。 |
 | `configs/mcp-trust.yaml` | MCP server ごとの trust metadata。通常の MCP 起動 config ではない。 |
 | `docs/mcp-trust-config.ja.md` | `configs/mcp-trust.yaml` の layout と通常の MCP config との違い。 |
+| `scripts/check-sensitive-files.sh` | local entity / mapping file の誤 commit を防ぐ check。 |
+| `lefthook.yml` | pre-commit で repository 固有 check を走らせる Lefthook 設定。 |
+| `docs/commit-checks.ja.md` | commit 前 check の説明。 |
 | `examples/prompt.txt` | customer name、internal URL、email、AWS key、local path を含む sample outbound prompt。 |
 | `examples/agent-response.txt` | `posthook` detection 用の risky shell command を含む sample agent response。 |
 | `hooks/claude-code-prehook.sh` | outbound prompt を sanitize する Claude Code 用 sample prehook。 |
