@@ -169,6 +169,8 @@ outbound:
 
 Project-specific replacements such as `AcmeBank -> [CLIENT#A]` are configured in `entities`. Generic secrets such as AWS keys, emails, internal URLs, and tokens are detected by built-in detectors.
 
+Important: real customer names, internal service names, and database names can be sensitive by themselves. Do not hard-code them in `configs/policy.yaml` and commit them to git. For production, load them through `entity_files` from a gitignored local file such as `configs/entities.local.yaml`, or store them encrypted with SOPS / age / git-crypt and decrypt them before runtime.
+
 ## Commands
 
 Inspect a prompt and print outbound risk, detected entities, and policy decision. This produces evidence for allowing or blocking outbound submission.
@@ -382,6 +384,7 @@ Detected:
 | File | Purpose |
 |---|---|
 | `configs/policy.yaml` | Target policy, entity rules, and outbound controls. |
+| `configs/entities.local.example.yaml` | Sample for gitignored local entity files. |
 | `docs/policy-config.md` | Layout and field reference for `configs/policy.yaml`. |
 | `docs/integration.md` | How to reuse the gateway in a normal development repository. |
 | `install.sh` | Installer that creates `.agent-privacy-guard/` in a target repository. |
@@ -396,6 +399,8 @@ Detected:
 ## Command Summary
 
 Use the `examples/*` files for the demo. Replace them with your own prompt or response files in real use.
+
+If production entity rules contain real customer names or internal identifiers, use a gitignored `configs/entities.local.yaml` or an encrypted file instead of committing them to `configs/policy.yaml`.
 
 ```bash
 agent-privacy-guard inspect --input examples/prompt.txt --target claude_api

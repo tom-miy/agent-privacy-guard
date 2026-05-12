@@ -56,6 +56,8 @@ source_policy="$script_dir/configs/policy.yaml"
 install_dir="$target_dir/.agent-privacy-guard"
 hooks_dir="$install_dir/hooks"
 policy_path="$install_dir/policy.yaml"
+entity_example_path="$install_dir/entities.local.example.yaml"
+gitignore_path="$install_dir/.gitignore"
 prehook_path="$hooks_dir/prehook.sh"
 posthook_path="$hooks_dir/posthook.sh"
 mapping_path="$install_dir/mapping.json"
@@ -66,7 +68,7 @@ if [[ ! -f "$source_policy" ]]; then
 fi
 
 if [[ "$force" != "true" ]]; then
-  for path in "$policy_path" "$prehook_path" "$posthook_path"; do
+  for path in "$policy_path" "$entity_example_path" "$gitignore_path" "$prehook_path" "$posthook_path"; do
     if [[ -e "$path" ]]; then
       echo "error: $path already exists. Re-run with --force to overwrite." >&2
       exit 1
@@ -76,6 +78,22 @@ fi
 
 mkdir -p "$hooks_dir"
 install -m 0644 "$source_policy" "$policy_path"
+
+cat > "$entity_example_path" <<'ENTITIES'
+# Copy this file to entities.local.yaml for real project-specific entity rules.
+# Do not commit entities.local.yaml if it contains real customer names,
+# internal service names, database names, or other sensitive identifiers.
+
+entities:
+  - type: CLIENT
+    pattern: "\\b(ExampleCustomer|AnotherCustomer)\\b"
+    scope: prompt
+ENTITIES
+
+cat > "$gitignore_path" <<'GITIGNORE'
+entities.local.yaml
+mapping.json
+GITIGNORE
 
 cat > "$prehook_path" <<'PREHOOK'
 #!/usr/bin/env bash
@@ -106,6 +124,8 @@ chmod +x "$prehook_path" "$posthook_path"
 cat <<SUMMARY
 Installed agent-privacy-guard integration files:
   $policy_path
+  $entity_example_path
+  $gitignore_path
   $prehook_path
   $posthook_path
 
@@ -114,8 +134,9 @@ Local restore mappings will be written to:
 
 Next steps:
   1. Edit $policy_path for this repository's customer names and internal identifiers.
-  2. Wire $prehook_path into your agent's outbound prompt hook.
-  3. Wire $posthook_path into your agent's response hook.
+  2. For real sensitive names, copy $entity_example_path to entities.local.yaml and enable entity_files in policy.yaml.
+  3. Wire $prehook_path into your agent's outbound prompt hook.
+  4. Wire $posthook_path into your agent's response hook.
 
 Smoke test:
   echo 'AcmeBank token=example-secret-value-1234' | $prehook_path

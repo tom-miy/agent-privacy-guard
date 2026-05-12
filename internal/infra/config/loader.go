@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/tom-miy/agent-privacy-guard/internal/domain"
 	"gopkg.in/yaml.v3"
@@ -23,11 +24,40 @@ func LoadPolicy(path string) (domain.Policy, error) {
 		return domain.Policy{}, err
 	}
 
-	p := domain.DefaultPolicy()
+	p := domain.Policy{}
 	if err := yaml.Unmarshal(b, &p); err != nil {
 		return domain.Policy{}, err
 	}
+	if err := loadEntityFiles(&p, filepath.Dir(path)); err != nil {
+		return domain.Policy{}, err
+	}
 	return p, nil
+}
+
+type entityFile struct {
+	Entities []domain.EntityRule `yaml:"entities"`
+}
+
+func loadEntityFiles(p *domain.Policy, baseDir string) error {
+	for _, item := range p.EntityFiles {
+		if item == "" {
+			continue
+		}
+		path := item
+		if !filepath.IsAbs(path) {
+			path = filepath.Join(baseDir, path)
+		}
+		b, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		var f entityFile
+		if err := yaml.Unmarshal(b, &f); err != nil {
+			return err
+		}
+		p.Entities = append(p.Entities, f.Entities...)
+	}
+	return nil
 }
 
 // ValidatePolicy returns human-readable problems for missing required policy fields.

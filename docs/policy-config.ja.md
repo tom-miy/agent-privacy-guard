@@ -7,6 +7,7 @@
 - どの target に送るか。
 - target ごとの trust level と sanitization strength。
 - project-specific な entity anonymization rule。
+- untracked local entity file の読み込み。
 - secret が見つかった場合に outbound を止めるか。
 - diff-only context を推奨するか。
 
@@ -24,6 +25,11 @@ entities:
   - type: CLIENT
     pattern: "\\b(AcmeBank|ExampleCorp|MegaRetail)\\b"
     scope: prompt
+
+# Optional. Use this for real customer names or internal identifiers.
+# Paths are relative to this policy file.
+entity_files:
+  - entities.local.yaml
 
 outbound:
   block_on_secret: true
@@ -62,6 +68,13 @@ outbound:
 
 `entities` は顧客名、DB 名、project-specific な識別子を structured placeholder に変換するための rule です。
 
+重要: 本物の顧客名、内部システム名、DB 名などは、それ自体が外部に出したくない情報です。公開 repository や通常の git 管理にそのまま入れないでください。
+
+この repository の `entities` は demo 用の fake 値です。本番では次のどちらかを推奨します。
+
+- `entity_files` で gitignore された local file から読む。
+- SOPS / age / git-crypt などで暗号化し、実行時に復号した file を `entity_files` で読む。
+
 ```yaml
 entities:
   - type: CLIENT
@@ -81,9 +94,33 @@ entities:
 
 `type` が placeholder prefix になります。たとえば `type: CLIENT` は `[CLIENT#A]`、`[CLIENT#B]` のように出力されます。
 
+## `entity_files`
+
+`entity_files` は、追加の entity rule を別 YAML から読み込みます。
+
+```yaml
+entity_files:
+  - entities.local.yaml
+```
+
+path は `configs/policy.yaml` からの相対 path として解決されます。上の例では `configs/entities.local.yaml` を読みます。
+
+local file の layout:
+
+```yaml
+entities:
+  - type: CLIENT
+    pattern: "\\b(RealCustomerName|AnotherPrivateClient)\\b"
+    scope: prompt
+```
+
+`.gitignore` では `configs/entities.local.yaml` を ignore しています。sample として [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml) を用意しています。
+
+暗号化して管理したい場合は、暗号化済み file を git 管理し、復号した一時 file を `entity_files` で参照する運用にしてください。この minimal implementation は暗号化 / 復号自体は行いません。
+
 ## Adding A New Customer Name
 
-`NewCustomer` を匿名化したい場合は、`CLIENT` rule の `pattern` に追加します。
+demo 用の fake name であれば `CLIENT` rule の `pattern` に追加できます。
 
 ```yaml
 entities:
@@ -97,6 +134,8 @@ entities:
 ```bash
 agent-privacy-guard preview --input examples/prompt.txt --target claude_api
 ```
+
+本物の顧客名の場合は、`configs/policy.yaml` ではなく `configs/entities.local.yaml` に追加してください。
 
 ## Built-in Secret Detectors
 

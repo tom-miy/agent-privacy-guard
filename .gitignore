@@ -2,3 +2,6 @@
 /audit/
 .agent-privacy-guard.mapping.json
 mapping.json
+configs/entities.local.yaml
+.agent-privacy-guard/entities.local.yaml
+.agent-privacy-guard/mapping.json

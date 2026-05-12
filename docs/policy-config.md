@@ -7,6 +7,7 @@ It defines:
 - Which target the prompt is going to.
 - Trust level and sanitization strength per target.
 - Project-specific entity anonymization rules.
+- Loading untracked local entity files.
 - Whether outbound send should be blocked when secrets are detected.
 - Whether diff-only context is recommended.
 
@@ -24,6 +25,11 @@ entities:
   - type: CLIENT
     pattern: "\\b(AcmeBank|ExampleCorp|MegaRetail)\\b"
     scope: prompt
+
+# Optional. Use this for real customer names or internal identifiers.
+# Paths are relative to this policy file.
+entity_files:
+  - entities.local.yaml
 
 outbound:
   block_on_secret: true
@@ -62,6 +68,13 @@ outbound:
 
 `entities` turns customer names, database names, and other project-specific identifiers into structured placeholders.
 
+Important: real customer names, internal system names, and database names may themselves be sensitive. Do not put them directly in a public repository or ordinary git history.
+
+The committed `entities` in this repository are fake demo values. For production, prefer one of these:
+
+- Load a gitignored local file through `entity_files`.
+- Store encrypted rules with SOPS / age / git-crypt and decrypt them before runtime.
+
 ```yaml
 entities:
   - type: CLIENT
@@ -81,9 +94,33 @@ This produces replacements such as:
 
 `type` becomes the placeholder prefix. For example, `type: CLIENT` produces `[CLIENT#A]`, `[CLIENT#B]`, and so on.
 
+## `entity_files`
+
+`entity_files` loads additional entity rules from separate YAML files.
+
+```yaml
+entity_files:
+  - entities.local.yaml
+```
+
+Paths are resolved relative to `configs/policy.yaml`. The example above loads `configs/entities.local.yaml`.
+
+Local file layout:
+
+```yaml
+entities:
+  - type: CLIENT
+    pattern: "\\b(RealCustomerName|AnotherPrivateClient)\\b"
+    scope: prompt
+```
+
+`.gitignore` ignores `configs/entities.local.yaml`. A safe sample is available at [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml).
+
+If you want encrypted storage, keep the encrypted file in git and decrypt it to a temporary local file referenced by `entity_files`. This minimal implementation does not perform encryption or decryption.
+
 ## Adding A New Customer Name
 
-To anonymize `NewCustomer`, add it to the `CLIENT` rule.
+For fake demo names, add them to the `CLIENT` rule.
 
 ```yaml
 entities:
@@ -97,6 +134,8 @@ Then verify with:
 ```bash
 agent-privacy-guard preview --input examples/prompt.txt --target claude_api
 ```
+
+For real customer names, add them to `configs/entities.local.yaml` instead of `configs/policy.yaml`.
 
 ## Built-in Secret Detectors
 

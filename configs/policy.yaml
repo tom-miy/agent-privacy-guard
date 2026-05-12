@@ -13,6 +13,9 @@
 # - Generic secrets such as AWS keys, emails, tokens, internal URLs, and SSH
 #   private keys are detected by built-in detectors and do not need to be
 #   listed in entities.
+# - Real customer names, project names, and internal identifiers can be
+#   sensitive. Keep production entity rules in an untracked local file or an
+#   encrypted secret workflow instead of committing them here.
 
 # targets defines named destinations used by --target.
 #
@@ -81,6 +84,22 @@ targets:
     allow: true
     mode: external_mcp
 
+# entity_files can load additional entity rules from separate YAML files.
+# Use this for real customer names or internal identifiers that should not be
+# committed to git.
+#
+# Paths are resolved relative to this policy file.
+#
+# Recommended production pattern:
+# - keep this policy file in git
+# - create configs/entities.local.yaml locally
+# - add real entity patterns there
+# - keep configs/entities.local.yaml ignored or decrypt it at runtime
+#
+# Example:
+# entity_files:
+#   - entities.local.yaml
+
 # entities defines project-specific identifiers that should become structured
 # placeholders when sanitize: strong is used.
 #
@@ -90,6 +109,11 @@ targets:
 #
 # pattern is a regular expression. Add your own customer names, service names,
 # database names, or internal project identifiers here.
+#
+# Security note:
+# - The examples below are fake demo values.
+# - Do not commit real customer names or sensitive internal identifiers here.
+# - Put real rules in entity_files such as configs/entities.local.yaml.
 #
 # scope is reserved for future use. Use "prompt" for now.
 entities:

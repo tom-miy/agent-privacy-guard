@@ -169,6 +169,8 @@ outbound:
 
 `AcmeBank -> [CLIENT#A]` のような project-specific な置換は `entities` で設定します。AWS key、email、internal URL、token などの汎用 secret は built-in detector で検出します。
 
+重要: 本物の顧客名、内部サービス名、DB 名などは、それ自体が機密情報になり得ます。`configs/policy.yaml` に直書きして git 管理しないでください。本番では `entity_files` で `configs/entities.local.yaml` のような gitignore 済み local file から読み込むか、SOPS / age / git-crypt などで暗号化して管理し、実行時に復号した file を読み込む運用を推奨します。
+
 ## Commands
 
 prompt を検査し、outbound risk、検出 entity、policy decision を表示します。外部送信を止めるかどうかの判断材料を出す command です。
@@ -382,6 +384,7 @@ Detected:
 | File | Purpose |
 |---|---|
 | `configs/policy.yaml` | target policy、entity rule、outbound control。 |
+| `configs/entities.local.example.yaml` | gitignore する local entity file の sample。 |
 | `docs/policy-config.ja.md` | `configs/policy.yaml` の layout と field reference。 |
 | `docs/integration.ja.md` | 通常の開発 repository に流用する時の file 配置と推奨 layout。 |
 | `install.sh` | 対象 repository に `.agent-privacy-guard/` を作成する installer。 |
@@ -396,6 +399,8 @@ Detected:
 ## Command Summary
 
 demo では `examples/*` のファイルを使います。実運用では自分の prompt file や response file に置き換えてください。
+
+本番の entity rule に本物の顧客名や内部識別子を含める場合は、`configs/policy.yaml` ではなく gitignore 済みの `configs/entities.local.yaml` または暗号化管理された file を使ってください。
 
 ```bash
 agent-privacy-guard inspect --input examples/prompt.txt --target claude_api

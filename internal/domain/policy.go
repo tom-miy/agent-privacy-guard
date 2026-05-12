@@ -38,9 +38,10 @@ const (
 // Policy describes target-specific sanitization and outbound safety rules.
 // Policy は送信先ごとのサニタイズ方針と送信安全ルールを表します。
 type Policy struct {
-	Targets  map[string]TargetPolicy `yaml:"targets"`
-	Entities []EntityRule            `yaml:"entities"`
-	Outbound OutboundPolicy          `yaml:"outbound"`
+	Targets     map[string]TargetPolicy `yaml:"targets"`
+	EntityFiles []string                `yaml:"entity_files"`
+	Entities    []EntityRule            `yaml:"entities"`
+	Outbound    OutboundPolicy          `yaml:"outbound"`
 }
 
 // TargetPolicy describes how a named outbound destination should be handled.
