@@ -1,0 +1,114 @@
+# agent-privacy-guard policy config.
+#
+# This file controls how prompts are handled before they are sent to an
+# AI coding agent, external LLM, local LLM, or MCP-related target.
+#
+# Main sections:
+# - targets:  destination-specific trust and sanitization policy
+# - entities: project-specific values to anonymize with structured placeholders
+# - outbound: global outbound safety controls
+#
+# Notes:
+# - This is gateway policy, not Claude Code / Cursor native settings.
+# - Generic secrets such as AWS keys, emails, tokens, internal URLs, and SSH
+#   private keys are detected by built-in detectors and do not need to be
+#   listed in entities.
+
+# targets defines named destinations used by --target.
+#
+# trust:
+# - public:       external LLMs, public coding agents, external MCP
+# - internal:     internal MCP, local services, local LLMs
+# - confidential: internal target allowed to handle confidential data
+# - secret:       most restrictive target class
+#
+# sanitize:
+# - none:   do not anonymize. Use only for trusted internal targets.
+# - weak:   apply minimal sanitization, mainly built-in secret detectors.
+# - strong: apply built-in secret detectors and entities rules.
+#
+# allow:
+# - true:  target is generally allowed by policy.
+# - false: target is blocked by policy.
+#
+# mode is descriptive metadata for humans and future routing logic.
+targets:
+  # Public external LLM target. Strong sanitization is required.
+  claude_api:
+    trust: public
+    sanitize: strong
+    allow: true
+    mode: external_llm
+
+  # Public AI coding agent targets. They use the same strong policy because
+  # prompt context can leave the local trust boundary.
+  cursor:
+    trust: public
+    sanitize: strong
+    allow: true
+    mode: agent
+  copilot:
+    trust: public
+    sanitize: strong
+    allow: true
+    mode: agent
+  codex:
+    trust: public
+    sanitize: strong
+    allow: true
+    mode: agent
+
+  # Local LLM target. It stays inside the local/internal boundary, so weak
+  # sanitization is enough for this sample policy.
+  local_qwen:
+    trust: internal
+    sanitize: weak
+    allow: true
+    mode: local_llm
+
+  # Internal MCP is trusted in this sample, so direct MCP context is not
+  # anonymized at this boundary.
+  internal_mcp:
+    trust: internal
+    sanitize: none
+    allow: true
+    mode: internal_mcp
+
+  # External MCP crosses a public boundary. Apply at least weak sanitization.
+  external_mcp:
+    trust: public
+    sanitize: weak
+    allow: true
+    mode: external_mcp
+
+# entities defines project-specific identifiers that should become structured
+# placeholders when sanitize: strong is used.
+#
+# type becomes the placeholder prefix:
+# - CLIENT      -> [CLIENT#A], [CLIENT#B], ...
+# - POSTGRES_DB -> [POSTGRES_DB#A], [POSTGRES_DB#B], ...
+#
+# pattern is a regular expression. Add your own customer names, service names,
+# database names, or internal project identifiers here.
+#
+# scope is reserved for future use. Use "prompt" for now.
+entities:
+  # Customer / client names that should not be sent to public LLMs as raw text.
+  - type: CLIENT
+    pattern: "\\b(AcmeBank|ExampleCorp|MegaRetail)\\b"
+    scope: prompt
+
+  # Database-like names. This intentionally keeps the sample simple and broad.
+  - type: POSTGRES_DB
+    pattern: "\\b[a-z0-9-]*db[a-z0-9-]*\\b"
+    scope: prompt
+
+# outbound controls global send decisions.
+outbound:
+  # If a high / critical secret is detected for a public target, inspect marks
+  # outbound_ok=false. With --fail-on-block, inspect exits non-zero.
+  block_on_secret: true
+
+  # Recommend sending only git diff / selected files / filtered stack traces
+  # instead of broad repository context.
+  diff_only: true

@@ -1,0 +1,2 @@
+Before sending repository context to an external model, run agent-privacy-guard inspect.
+Prefer diff-only context and keep MCP results inside the configured trust boundary.

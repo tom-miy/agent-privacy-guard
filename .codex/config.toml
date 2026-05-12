@@ -1,0 +1,4 @@
+[agent_privacy_guard]
+policy = "configs/policy.yaml"
+default_target = "codex"
+diff_only = true

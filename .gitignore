@@ -1,0 +1,4 @@
+.cache/
+audit/
+.agent-privacy-guard.mapping.json
+mapping.json

@@ -1,0 +1,4 @@
+Internal MCP returned customer AcmeBank with database prod-db-tokyo.
+Investigate https://billing.internal/incidents/42 and update support@example.com.
+AWS key observed in failing test: AKIAIOSFODNN7EXAMPLE
+Local path: /Users/mimr/work/acme/service/main.go

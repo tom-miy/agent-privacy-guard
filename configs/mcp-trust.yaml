@@ -1,0 +1,40 @@
+# agent-privacy-guard MCP trust metadata.
+#
+# This is not a standard MCP server launch config.
+# Do not put command, args, env, transport, or executable paths here.
+# Those belong to Claude Code / Cursor / Codex / Claude Desktop MCP configs.
+#
+# This file only describes how agent-privacy-guard should treat context that
+# comes from each MCP server.
+#
+# Layout:
+# - servers: map of MCP server names to trust metadata
+# - trust:   boundary classification for that MCP server
+# - sanitize: sanitization level to apply to MCP-derived context
+#
+# trust:
+# - internal: MCP server is inside the local/company trust boundary.
+# - public:   MCP server crosses an external/public boundary.
+#
+# sanitize:
+# - none: do not anonymize. Use only for trusted internal MCP servers.
+# - weak: apply minimal sanitization before sending context onward.
+# - strong can be used if an MCP server returns project/customer identifiers
+#   that should also go through entity anonymization.
+#
+# Keep this file separate from configs/policy.yaml:
+# - policy.yaml defines LLM / agent target policy.
+# - mcp-trust.yaml defines MCP server trust metadata.
+servers:
+  # Example: internal MCP server that can return customer or operational data.
+  # Because it is internal, direct MCP communication is not anonymized here.
+  internal-customer-db:
+    trust: internal
+    sanitize: none
+
+  # Example: external MCP server, such as a docs/search service outside the
+  # local trust boundary. Apply at least weak sanitization before forwarding
+  # MCP-derived context to another target.
+  external-docs-search:
+    trust: public
+    sanitize: weak

