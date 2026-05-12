@@ -15,6 +15,8 @@ var (
 	auditPath  string
 )
 
+// Execute runs the root CLI command and exits the process on error.
+// Execute はルート CLI コマンドを実行し、エラー時はプロセスを終了します。
 func Execute() {
 	root := newRootCommand()
 	if err := root.Execute(); err != nil {

@@ -9,6 +9,8 @@ import (
 	"github.com/tom-miy/agent-privacy-guard/internal/domain"
 )
 
+// Sanitizer applies policy-driven placeholder replacement to outbound prompt content.
+// Sanitizer は送信プロンプトに対してポリシーに基づくプレースホルダー置換を適用します。
 type Sanitizer struct {
 	Policy domain.Policy
 }
@@ -19,6 +21,8 @@ type detector struct {
 	severity domain.Severity
 }
 
+// Sanitize detects sensitive values for the target and returns sanitized content plus policy decisions.
+// Sanitize は送信先に応じて機微な値を検出し、サニタイズ済み内容とポリシー判断を返します。
 func (s Sanitizer) Sanitize(input, targetName string) (domain.SanitizationResult, error) {
 	target, ok := s.Policy.Targets[targetName]
 	if !ok {
@@ -75,6 +79,8 @@ func (s Sanitizer) Sanitize(input, targetName string) (domain.SanitizationResult
 	return result, nil
 }
 
+// Restore replaces placeholders in input using the supplied reversible mappings.
+// Restore は指定された可逆マッピングを使って入力内のプレースホルダーを元の値へ戻します。
 func (s Sanitizer) Restore(input string, mappings []domain.MappingEntry) string {
 	out := input
 	sort.SliceStable(mappings, func(i, j int) bool {

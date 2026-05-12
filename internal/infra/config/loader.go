@@ -8,6 +8,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// LoadPolicy reads a YAML policy file or returns DefaultPolicy when the file is missing.
+// LoadPolicy は YAML ポリシーファイルを読み込み、ファイルがない場合は DefaultPolicy を返します。
 func LoadPolicy(path string) (domain.Policy, error) {
 	if path == "" {
 		path = "configs/policy.yaml"
@@ -28,6 +30,8 @@ func LoadPolicy(path string) (domain.Policy, error) {
 	return p, nil
 }
 
+// ValidatePolicy returns human-readable problems for missing required policy fields.
+// ValidatePolicy は必須項目の不足を人が読める問題一覧として返します。
 func ValidatePolicy(p domain.Policy) []string {
 	var problems []string
 	if len(p.Targets) == 0 {

@@ -6,8 +6,12 @@ import (
 	"github.com/tom-miy/agent-privacy-guard/internal/domain"
 )
 
+// PosthookInspector scans agent responses for risky commands or sensitive patch targets.
+// PosthookInspector はエージェント応答から危険なコマンドや機微なパッチ対象を検出します。
 type PosthookInspector struct{}
 
+// Inspect returns command findings that should be reviewed before execution or application.
+// Inspect は実行または適用前に確認すべきコマンド検出結果を返します。
 func (p PosthookInspector) Inspect(response string) []domain.CommandFinding {
 	patterns := []struct {
 		re     *regexp.Regexp
