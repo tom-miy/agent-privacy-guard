@@ -169,7 +169,7 @@ outbound:
 
 `AcmeBank -> [CLIENT#A]` のような project-specific な置換は `entities` で設定します。AWS key、email、internal URL、token などの汎用 secret は built-in detector で検出します。
 
-重要: 本物の顧客名、内部サービス名、DB 名などは、それ自体が機密情報になり得ます。`configs/policy.yaml` に直書きして git 管理しないでください。本番では `entity_files` で `configs/entities.local.yaml` のような gitignore 済み local file から読み込むか、SOPS / age / git-crypt などで暗号化して管理し、実行時に復号した file を読み込む運用を推奨します。
+重要: 本物の顧客名、内部サービス名、DB 名などは、それ自体が機密情報になり得ます。`configs/policy.yaml` に直書きして git 管理しないでください。本番では `entity_files` で `configs/entities.local.yaml` のような gitignore 済み local file から読み込むか、SOPS / age / git-crypt などで暗号化して管理し、実行時に復号した file を読み込む運用を推奨します。空の local entity file は設定済みに見えてしまうため、この repository では実ファイルではなく example のみを置きます。
 
 ## Commands
 

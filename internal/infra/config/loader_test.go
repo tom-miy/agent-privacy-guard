@@ -80,3 +80,21 @@ outbound:
 		t.Fatalf("expected no implicit demo entities, got %#v", policy.Entities)
 	}
 }
+
+func TestValidatePolicyWarnsWhenEntityFilesAreMissing(t *testing.T) {
+	policy, err := LoadPolicy("")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy.EntityFiles = nil
+	problems := ValidatePolicy(policy)
+	var found bool
+	for _, problem := range problems {
+		if problem == "policy should define entity_files, even if the referenced local entity file is empty" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("expected missing entity_files warning, got %#v", problems)
+	}
+}

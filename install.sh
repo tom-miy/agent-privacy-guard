@@ -78,6 +78,7 @@ fi
 
 mkdir -p "$hooks_dir"
 install -m 0644 "$source_policy" "$policy_path"
+perl -pi -e 's/entities\.local\.example\.yaml/entities.local.yaml/g' "$policy_path"
 
 cat > "$entity_example_path" <<'ENTITIES'
 # Copy this file to entities.local.yaml for real project-specific entity rules.
@@ -134,7 +135,7 @@ Local restore mappings will be written to:
 
 Next steps:
   1. Edit $policy_path for this repository's customer names and internal identifiers.
-  2. For real sensitive names, copy $entity_example_path to entities.local.yaml and enable entity_files in policy.yaml.
+  2. Create $install_dir/entities.local.yaml from $entity_example_path or generate it from an encrypted source.
   3. Wire $prehook_path into your agent's outbound prompt hook.
   4. Wire $posthook_path into your agent's response hook.
 

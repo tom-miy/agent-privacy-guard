@@ -90,15 +90,11 @@ targets:
 #
 # Paths are resolved relative to this policy file.
 #
-# Recommended production pattern:
-# - keep this policy file in git
-# - create configs/entities.local.yaml locally
-# - add real entity patterns there
-# - keep configs/entities.local.yaml ignored or decrypt it at runtime
-#
-# Example:
-# entity_files:
-#   - entities.local.yaml
+# This reference repository points to the safe example file so validation works.
+# In a real application repository, change this to entities.local.yaml and keep
+# that file untracked or generated from an encrypted source.
+entity_files:
+  - entities.local.example.yaml
 
 # entities defines project-specific identifiers that should become structured
 # placeholders when sanitize: strong is used.

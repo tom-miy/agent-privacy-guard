@@ -169,7 +169,7 @@ outbound:
 
 Project-specific replacements such as `AcmeBank -> [CLIENT#A]` are configured in `entities`. Generic secrets such as AWS keys, emails, internal URLs, and tokens are detected by built-in detectors.
 
-Important: real customer names, internal service names, and database names can be sensitive by themselves. Do not hard-code them in `configs/policy.yaml` and commit them to git. For production, load them through `entity_files` from a gitignored local file such as `configs/entities.local.yaml`, or store them encrypted with SOPS / age / git-crypt and decrypt them before runtime.
+Important: real customer names, internal service names, and database names can be sensitive by themselves. Do not hard-code them in `configs/policy.yaml` and commit them to git. For production, load them through `entity_files` from a gitignored local file such as `configs/entities.local.yaml`, or store them encrypted with SOPS / age / git-crypt and decrypt them before runtime. An empty local entity file can look like it is configured, so this repository ships only an example file, not the real local file.
 
 ## Commands
 

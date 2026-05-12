@@ -67,6 +67,9 @@ func ValidatePolicy(p domain.Policy) []string {
 	if len(p.Targets) == 0 {
 		problems = append(problems, "policy must define at least one target")
 	}
+	if len(p.EntityFiles) == 0 {
+		problems = append(problems, "policy should define entity_files, even if the referenced local entity file is empty")
+	}
 	for name, target := range p.Targets {
 		if target.Trust == "" {
 			problems = append(problems, "target "+name+" is missing trust")

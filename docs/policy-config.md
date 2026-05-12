@@ -26,7 +26,8 @@ entities:
     pattern: "\\b(AcmeBank|ExampleCorp|MegaRetail)\\b"
     scope: prompt
 
-# Optional. Use this for real customer names or internal identifiers.
+# Required by the baseline. Create the referenced file explicitly when applying
+# this policy to a real repository.
 # Paths are relative to this policy file.
 entity_files:
   - entities.local.yaml
@@ -70,7 +71,7 @@ outbound:
 
 Important: real customer names, internal system names, and database names may themselves be sensitive. Do not put them directly in a public repository or ordinary git history.
 
-The committed `entities` in this repository are fake demo values. For production, prefer one of these:
+The committed `entities` in this repository are fake demo values. This baseline requires `entity_files` to be configured, but it does not auto-create the referenced file. An empty file can create a false sense that entity rules are configured, so create it explicitly in the target repository. For production, prefer one of these:
 
 - Load a gitignored local file through `entity_files`.
 - Store encrypted rules with SOPS / age / git-crypt and decrypt them before runtime.
@@ -96,7 +97,7 @@ This produces replacements such as:
 
 ## `entity_files`
 
-`entity_files` loads additional entity rules from separate YAML files.
+`entity_files` loads additional entity rules from separate YAML files. In this baseline, missing files fail at load / validate time.
 
 ```yaml
 entity_files:
@@ -104,6 +105,8 @@ entity_files:
 ```
 
 Paths are resolved relative to `configs/policy.yaml`. The example above loads `configs/entities.local.yaml`.
+
+In this reference repository, `configs/policy.yaml` points to `entities.local.example.yaml` so validation works. `install.sh` rewrites that reference to `entities.local.yaml` in the target repository.
 
 Local file layout:
 
@@ -114,7 +117,7 @@ entities:
     scope: prompt
 ```
 
-`.gitignore` ignores `configs/entities.local.yaml`. A safe sample is available at [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml).
+In normal application repositories, the installer creates `.agent-privacy-guard/entities.local.example.yaml` and `.agent-privacy-guard/.gitignore`. Copy the example or generate `.agent-privacy-guard/entities.local.yaml` from an encrypted source when you actually configure local entities. A safe sample is available at [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml).
 
 If you want encrypted storage, keep the encrypted file in git and decrypt it to a temporary local file referenced by `entity_files`. This minimal implementation does not perform encryption or decryption.
 
