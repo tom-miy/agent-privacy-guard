@@ -90,7 +90,7 @@ func TestValidatePolicyWarnsWhenEntityFilesAreMissing(t *testing.T) {
 	problems := ValidatePolicy(policy)
 	var found bool
 	for _, problem := range problems {
-		if problem == "policy should define entity_files, even if the referenced local entity file is empty" {
+		if problem == "policy should define entity_files for local/private entity rules" {
 			found = true
 		}
 	}

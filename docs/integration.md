@@ -45,6 +45,9 @@ This creates:
 ```text
 .agent-privacy-guard/
   policy.yaml
+  mcp-trust.yaml
+  entities.local.example.yaml
+  .gitignore
   hooks/
     prehook.sh
     posthook.sh
@@ -53,7 +56,7 @@ This creates:
 If reusing samples from this repository, the minimum useful set is:
 
 ```text
-configs/policy.yaml
+templates/agent-privacy-guard/policy.yaml
 hooks/claude-code-prehook.sh
 hooks/agent-posthook.sh
 ```
@@ -61,14 +64,14 @@ hooks/agent-posthook.sh
 Optionally add:
 
 ```text
-configs/mcp-trust.yaml
+templates/agent-privacy-guard/mcp-trust.yaml
 AGENTS.md
 CLAUDE.md
 .cursorrules
 .codex/config.toml
 ```
 
-`configs/mcp-trust.yaml` is not a standard MCP server launch config. It is trust metadata per MCP server. See [mcp-trust-config.md](mcp-trust-config.md) for details.
+`templates/agent-privacy-guard/mcp-trust.yaml` is not a standard MCP server launch config. It is trust metadata per MCP server. See [mcp-trust-config.md](mcp-trust-config.md) for details.
 
 ## What Not To Copy
 
@@ -101,6 +104,9 @@ your-app/
 
   .agent-privacy-guard/
     policy.yaml
+    mcp-trust.yaml
+    entities.local.example.yaml
+    .gitignore
     hooks/
       prehook.sh
       posthook.sh
@@ -109,9 +115,11 @@ your-app/
 Mapping from this reference repository:
 
 ```text
-configs/policy.yaml              -> .agent-privacy-guard/policy.yaml
-hooks/claude-code-prehook.sh     -> .agent-privacy-guard/hooks/prehook.sh
-hooks/agent-posthook.sh          -> .agent-privacy-guard/hooks/posthook.sh
+templates/agent-privacy-guard/policy.yaml                 -> .agent-privacy-guard/policy.yaml
+templates/agent-privacy-guard/mcp-trust.yaml              -> .agent-privacy-guard/mcp-trust.yaml
+templates/agent-privacy-guard/entities.local.example.yaml -> .agent-privacy-guard/entities.local.example.yaml
+hooks/claude-code-prehook.sh                              -> .agent-privacy-guard/hooks/prehook.sh
+hooks/agent-posthook.sh                                   -> .agent-privacy-guard/hooks/posthook.sh
 ```
 
 Update the hook `--policy` path accordingly:
@@ -130,7 +138,7 @@ This repository is a portfolio / reference implementation, so it contains both p
 | Area | Purpose |
 |---|---|
 | `cmd/`, `internal/` | CLI implementation. |
-| `configs/`, `hooks/`, `examples/`, `docs/` | Usage examples, policy samples, and integration samples. |
+| `templates/agent-privacy-guard/`, `hooks/`, `examples/`, `docs/` | Usage examples, policy samples, and integration samples. |
 
 A normal application repository only needs a small subset of the second group.
 

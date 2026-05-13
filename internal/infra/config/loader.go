@@ -13,7 +13,7 @@ import (
 // LoadPolicy は YAML ポリシーファイルを読み込み、ファイルがない場合は DefaultPolicy を返します。
 func LoadPolicy(path string) (domain.Policy, error) {
 	if path == "" {
-		path = "configs/policy.yaml"
+		path = ".agent-privacy-guard/policy.yaml"
 	}
 
 	b, err := os.ReadFile(path)
@@ -68,7 +68,7 @@ func ValidatePolicy(p domain.Policy) []string {
 		problems = append(problems, "policy must define at least one target")
 	}
 	if len(p.EntityFiles) == 0 {
-		problems = append(problems, "policy should define entity_files, even if the referenced local entity file is empty")
+		problems = append(problems, "policy should define entity_files for local/private entity rules")
 	}
 	for name, target := range p.Targets {
 		if target.Trust == "" {

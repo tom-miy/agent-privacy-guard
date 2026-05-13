@@ -13,7 +13,6 @@ scripts/check-sensitive-files.sh
 The script fails if staged files include:
 
 ```text
-configs/entities.local.yaml
 .agent-privacy-guard/entities.local.yaml
 .agent-privacy-guard/mapping.json
 .agent-privacy-guard.mapping.json

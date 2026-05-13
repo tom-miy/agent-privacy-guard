@@ -1,6 +1,6 @@
 # Policy Config
 
-`configs/policy.yaml` is the central configuration file for `agent-privacy-guard`.
+`templates/agent-privacy-guard/policy.yaml` is the central configuration file for `agent-privacy-guard`.
 
 It defines:
 
@@ -104,9 +104,9 @@ entity_files:
   - entities.local.yaml
 ```
 
-Paths are resolved relative to `configs/policy.yaml`. The example above loads `configs/entities.local.yaml`.
+Paths are resolved relative to the policy file. After `install.sh`, the policy lives at `.agent-privacy-guard/policy.yaml`, so the example above loads `.agent-privacy-guard/entities.local.yaml`.
 
-In this reference repository, `configs/policy.yaml` points to `entities.local.example.yaml` so validation works. `install.sh` rewrites that reference to `entities.local.yaml` in the target repository.
+In this reference repository, `templates/agent-privacy-guard/policy.yaml` points to `entities.local.example.yaml` so validation works. `install.sh` rewrites that reference to `entities.local.yaml` in the target repository.
 
 Local file layout:
 
@@ -117,7 +117,7 @@ entities:
     scope: prompt
 ```
 
-In normal application repositories, the installer creates `.agent-privacy-guard/entities.local.example.yaml` and `.agent-privacy-guard/.gitignore`. Copy the example or generate `.agent-privacy-guard/entities.local.yaml` from an encrypted source when you actually configure local entities. A safe sample is available at [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml).
+In normal application repositories, the installer creates `.agent-privacy-guard/entities.local.example.yaml` and `.agent-privacy-guard/.gitignore`. Copy the example or generate `.agent-privacy-guard/entities.local.yaml` from an encrypted source when you actually configure local entities. A safe sample is available at [../templates/agent-privacy-guard/entities.local.example.yaml](../templates/agent-privacy-guard/entities.local.example.yaml).
 
 If you want encrypted storage, keep the encrypted file in git and decrypt it to a temporary local file referenced by `entity_files`. This minimal implementation does not perform encryption or decryption.
 
@@ -138,7 +138,7 @@ Then verify with:
 agent-privacy-guard preview --input examples/prompt.txt --target claude_api
 ```
 
-For real customer names, add them to `configs/entities.local.yaml` instead of `configs/policy.yaml`.
+For real customer names, add them to `.agent-privacy-guard/entities.local.yaml` instead of `templates/agent-privacy-guard/policy.yaml`.
 
 ## Built-in Secret Detectors
 

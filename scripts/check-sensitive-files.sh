@@ -7,7 +7,6 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 fi
 
 blocked_patterns=(
-  '(^|/)configs/entities\.local\.yaml$'
   '(^|/)\.agent-privacy-guard/entities\.local\.yaml$'
   '(^|/)\.agent-privacy-guard/mapping\.json$'
   '(^|/)\.agent-privacy-guard\.mapping\.json$'

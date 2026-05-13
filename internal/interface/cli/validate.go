@@ -38,6 +38,6 @@ func newValidateCommand() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringSliceVar(&paths, "agent-config", []string{"AGENTS.md", "CLAUDE.md", ".cursorrules", ".codex/config.toml", "configs/mcp-trust.yaml"}, "agent config paths to lint for existence")
+	cmd.Flags().StringSliceVar(&paths, "agent-config", []string{"AGENTS.md", "CLAUDE.md", ".cursorrules", ".codex/config.toml", ".agent-privacy-guard/mcp-trust.yaml"}, "agent config paths to lint for existence")
 	return cmd
 }

@@ -1,18 +1,18 @@
 # MCP Trust Config
 
-`configs/mcp-trust.yaml` is **not a standard MCP server launch configuration**.
+`templates/agent-privacy-guard/mcp-trust.yaml` is **not a standard MCP server launch configuration**.
 
 It is supplemental metadata used by `agent-privacy-guard` to describe the trust boundary for each MCP server.
 
 ## What This File Is
 
-`configs/mcp-trust.yaml` describes:
+`templates/agent-privacy-guard/mcp-trust.yaml` describes:
 
 - Which MCP servers are treated as internal.
 - Which MCP servers are treated as external / public.
 - Which sanitization level applies to context derived from each MCP server.
 
-This file uses YAML because it is gateway policy metadata, not a standard MCP JSON config, and it belongs beside `configs/policy.yaml`.
+This file uses YAML because it is gateway policy metadata, not a standard MCP JSON config, and it belongs beside `templates/agent-privacy-guard/policy.yaml`.
 
 ```yaml
 # agent-privacy-guard MCP trust metadata.
@@ -48,18 +48,18 @@ Those belong in the MCP client configuration for Claude Desktop, Claude Code, Cu
 | `servers.<name>.trust` | Trust boundary such as `internal` or `public`. |
 | `servers.<name>.sanitize` | Sanitization level for context derived from that MCP server. |
 
-## Relationship To `configs/policy.yaml`
+## Relationship To `templates/agent-privacy-guard/policy.yaml`
 
-`configs/policy.yaml` is target policy for LLMs and agents.
+`templates/agent-privacy-guard/policy.yaml` is target policy for LLMs and agents.
 
-`configs/mcp-trust.yaml` is trust metadata for MCP servers.
+`templates/agent-privacy-guard/mcp-trust.yaml` is trust metadata for MCP servers.
 
 ```text
-configs/policy.yaml
+templates/agent-privacy-guard/policy.yaml
   -> target policy for claude_api, cursor, codex, internal_mcp, external_mcp, etc.
 
-configs/mcp-trust.yaml
+templates/agent-privacy-guard/mcp-trust.yaml
   -> MCP server metadata for internal-customer-db, external-docs-search, etc.
 ```
 
-In the current minimal implementation, `configs/mcp-trust.yaml` is an integration sample / design reference. In production integration, it is intended to be matched against the real MCP client config and used for gateway routing decisions.
+In the current minimal implementation, `templates/agent-privacy-guard/mcp-trust.yaml` is an integration sample / design reference. In production integration, it is intended to be matched against the real MCP client config and used for gateway routing decisions.

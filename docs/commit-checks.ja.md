@@ -13,7 +13,6 @@ scripts/check-sensitive-files.sh
 staged file に次が含まれていたら失敗します。
 
 ```text
-configs/entities.local.yaml
 .agent-privacy-guard/entities.local.yaml
 .agent-privacy-guard/mapping.json
 .agent-privacy-guard.mapping.json

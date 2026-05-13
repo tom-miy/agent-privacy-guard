@@ -6,5 +6,5 @@ set -euo pipefail
 # Keeps reversible placeholder mapping local.
 agent-privacy-guard sanitize \
   --target claude_api \
-  --policy configs/policy.yaml \
-  --mapping-out .agent-privacy-guard.mapping.json
+  --policy .agent-privacy-guard/policy.yaml \
+  --mapping-out .agent-privacy-guard/mapping.json

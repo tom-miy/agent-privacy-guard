@@ -22,7 +22,7 @@
 # - strong can be used if an MCP server returns project/customer identifiers
 #   that should also go through entity anonymization.
 #
-# Keep this file separate from configs/policy.yaml:
+# Keep this file separate from policy.yaml:
 # - policy.yaml defines LLM / agent target policy.
 # - mcp-trust.yaml defines MCP server trust metadata.
 servers:

@@ -32,7 +32,7 @@ func newRootCommand() *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
-	cmd.PersistentFlags().StringVarP(&policyPath, "policy", "p", "configs/policy.yaml", "policy YAML path")
+	cmd.PersistentFlags().StringVarP(&policyPath, "policy", "p", ".agent-privacy-guard/policy.yaml", "policy YAML path")
 	cmd.PersistentFlags().StringVarP(&targetName, "target", "t", "claude_api", "target name")
 	cmd.PersistentFlags().StringVar(&auditPath, "audit-log", "audit/agent-privacy-guard.jsonl", "audit JSONL path")
 	cmd.PersistentFlags().BoolVar(&outputJSON, "json", false, "output JSON")

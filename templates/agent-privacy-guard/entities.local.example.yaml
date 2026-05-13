@@ -1,10 +1,10 @@
 # Example local entity file.
 #
-# Copy this to configs/entities.local.yaml for real project use.
-# Do not commit configs/entities.local.yaml if it contains real customer names,
+# Copy this to .agent-privacy-guard/entities.local.yaml for real project use.
+# Do not commit .agent-privacy-guard/entities.local.yaml if it contains real customer names,
 # internal system names, database names, or other sensitive identifiers.
 #
-# In configs/policy.yaml, enable it with:
+# In .agent-privacy-guard/policy.yaml, enable it with:
 #
 # entity_files:
 #   - entities.local.yaml

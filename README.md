@@ -36,7 +36,7 @@ See [docs/integration.md](docs/integration.md) for details.
 - Reversible local mapping for restore workflows.
 - `inspect`, `sanitize`, `preview`, `restore`, `posthook`, and `validate` CLI commands.
 - JSONL audit logging.
-- Sample hooks, configs, adapters, and demo inputs.
+- Sample hooks, templates, adapters, and demo inputs.
 
 ## How It Is Used
 
@@ -80,7 +80,7 @@ This section is for trying the `agent-privacy-guard` CLI inside this source repo
 
 It uses these sample files:
 
-- Policy file: `configs/policy.yaml`
+- Policy file: `templates/agent-privacy-guard/policy.yaml`
 - Input prompt: `examples/prompt.txt`
 - Agent response sample: `examples/agent-response.txt`
 - Mapping output: `/tmp/apg.mapping.json`
@@ -94,25 +94,25 @@ go mod tidy
 First, inspect the demo prompt risk. This is mainly for policy review or CI; it is not required before every prompt in normal use.
 
 ```bash
-go run ./cmd/agent-privacy-guard inspect --input examples/prompt.txt --target claude_api
+go run ./cmd/agent-privacy-guard inspect --policy templates/agent-privacy-guard/policy.yaml --input examples/prompt.txt --target claude_api
 ```
 
 Next, preview which values will be replaced by structured placeholders. This is useful while tuning policy.
 
 ```bash
-go run ./cmd/agent-privacy-guard preview --input examples/prompt.txt --target claude_api
+go run ./cmd/agent-privacy-guard preview --policy templates/agent-privacy-guard/policy.yaml --input examples/prompt.txt --target claude_api
 ```
 
 This is the actual prehook operation before sending a prompt to an external LLM. It prints sanitized prompt text and writes the reversible mapping to `/tmp/apg.mapping.json`.
 
 ```bash
-go run ./cmd/agent-privacy-guard sanitize --input examples/prompt.txt --target claude_api --mapping-out /tmp/apg.mapping.json
+go run ./cmd/agent-privacy-guard sanitize --policy templates/agent-privacy-guard/policy.yaml --input examples/prompt.txt --target claude_api --mapping-out /tmp/apg.mapping.json
 ```
 
 After receiving an agent response, the posthook checks it for dangerous commands before anything is applied locally.
 
 ```bash
-go run ./cmd/agent-privacy-guard posthook --input examples/agent-response.txt
+go run ./cmd/agent-privacy-guard posthook --policy templates/agent-privacy-guard/policy.yaml --input examples/agent-response.txt
 ```
 
 Instead of running each command manually, use `scripts/demo.sh` to see the same sequence in one shot. This is not the production integration command; it is a smoke demo for checking the gateway behavior.
@@ -126,7 +126,7 @@ What the script shows:
 | Step | What to look at | Expected result |
 |---|---|---|
 | 1. inspect | Risk decision for the raw prompt. | `Outbound Risk: HIGH` because secrets are present. |
-| 2. preview | What `configs/policy.yaml` entities and built-in detectors will replace. | Values such as `AcmeBank -> [CLIENT#A]` are shown. |
+| 2. preview | What `templates/agent-privacy-guard/policy.yaml` entities and built-in detectors will replace. | Values such as `AcmeBank -> [CLIENT#A]` are shown. |
 | 3. raw prompt | The input before anonymization. | Customer name, internal URL, and AWS key are still visible. |
 | 4. sanitize | The prompt that would be sent externally. | Raw values are replaced with placeholders. |
 | 5. mapping | Local-only restore information. | Placeholder-to-raw-value mapping is saved as JSON. |
@@ -136,7 +136,7 @@ In short, `demo.sh` is not "how to use every feature in production." It is a rep
 
 ## Policy File
 
-The sample policy lives at `configs/policy.yaml`. This file controls both where the prompt is going and which project-specific entities become placeholders.
+The sample policy lives at `templates/agent-privacy-guard/policy.yaml`. This file controls both where the prompt is going and which project-specific entities become placeholders.
 
 See [docs/policy-config.md](docs/policy-config.md) for the full layout and field reference.
 
@@ -169,7 +169,7 @@ outbound:
 
 Project-specific replacements such as `AcmeBank -> [CLIENT#A]` are configured in `entities`. Generic secrets such as AWS keys, emails, internal URLs, and tokens are detected by built-in detectors.
 
-Important: real customer names, internal service names, and database names can be sensitive by themselves. Do not hard-code them in `configs/policy.yaml` and commit them to git. For production, load them through `entity_files` from a gitignored local file such as `configs/entities.local.yaml`, or store them encrypted with SOPS / age / git-crypt and decrypt them before runtime. An empty local entity file can look like it is configured, so this repository ships only an example file, not the real local file.
+Important: real customer names, internal service names, and database names can be sensitive by themselves. Do not hard-code them in `templates/agent-privacy-guard/policy.yaml` and commit them to git. For production, load them through `entity_files` from a gitignored local file such as `.agent-privacy-guard/entities.local.yaml`, or store them encrypted with SOPS / age / git-crypt and decrypt them before runtime. An empty local entity file can look like it is configured, so this repository ships only an example file, not the real local file.
 
 ## Commands
 
@@ -211,10 +211,16 @@ Detect dangerous commands or forbidden patch targets in an agent response:
 agent-privacy-guard posthook --input examples/agent-response.txt
 ```
 
-Validate `configs/policy.yaml` and expected agent config files:
+Validate the installed `.agent-privacy-guard/policy.yaml` and expected agent config files:
 
 ```bash
 agent-privacy-guard validate
+```
+
+Inside this source repository, validate the template explicitly:
+
+```bash
+agent-privacy-guard validate --policy templates/agent-privacy-guard/policy.yaml --agent-config AGENTS.md,CLAUDE.md,.cursorrules,.codex/config.toml,templates/agent-privacy-guard/mcp-trust.yaml
 ```
 
 ## Hook Example
@@ -227,7 +233,7 @@ For Claude Code or any other agent, place the gateway where outbound prompt text
 cat examples/prompt.txt | hooks/claude-code-prehook.sh
 ```
 
-The hook returns sanitized prompt text on stdout. Only that sanitized prompt should be sent to the external LLM. The placeholder mapping is saved to `.agent-privacy-guard.mapping.json` and should remain local.
+The hook returns sanitized prompt text on stdout. Only that sanitized prompt should be sent to the external LLM. The placeholder mapping is saved to `.agent-privacy-guard/mapping.json` and should remain local.
 
 `hooks/agent-posthook.sh` inspects agent responses after they come back.
 
@@ -383,13 +389,13 @@ Detected:
 
 | File | Purpose |
 |---|---|
-| `configs/policy.yaml` | Target policy, entity rules, and outbound controls. |
-| `configs/entities.local.example.yaml` | Sample for gitignored local entity files. |
-| `docs/policy-config.md` | Layout and field reference for `configs/policy.yaml`. |
+| `templates/agent-privacy-guard/policy.yaml` | Target policy, entity rules, and outbound controls. |
+| `templates/agent-privacy-guard/entities.local.example.yaml` | Sample for gitignored local entity files. |
+| `docs/policy-config.md` | Layout and field reference for `templates/agent-privacy-guard/policy.yaml`. |
 | `docs/integration.md` | How to reuse the gateway in a normal development repository. |
 | `install.sh` | Installer that creates `.agent-privacy-guard/` in a target repository. |
-| `configs/mcp-trust.yaml` | Trust metadata per MCP server. Not a standard MCP launch config. |
-| `docs/mcp-trust-config.md` | Layout for `configs/mcp-trust.yaml` and how it differs from normal MCP configs. |
+| `templates/agent-privacy-guard/mcp-trust.yaml` | Trust metadata per MCP server. Not a standard MCP launch config. |
+| `docs/mcp-trust-config.md` | Layout for `templates/agent-privacy-guard/mcp-trust.yaml` and how it differs from normal MCP configs. |
 | `scripts/check-sensitive-files.sh` | Check that blocks accidental commits of local entity / mapping files. |
 | `lefthook.yml` | Lefthook config for repository-specific pre-commit checks. |
 | `docs/commit-checks.md` | Commit check documentation. |
@@ -404,7 +410,7 @@ Detected:
 
 Use the `examples/*` files for the demo. Replace them with your own prompt or response files in real use.
 
-If production entity rules contain real customer names or internal identifiers, use a gitignored `configs/entities.local.yaml` or an encrypted file instead of committing them to `configs/policy.yaml`.
+If production entity rules contain real customer names or internal identifiers, use a gitignored `.agent-privacy-guard/entities.local.yaml` or an encrypted file instead of committing them to `templates/agent-privacy-guard/policy.yaml`.
 
 ```bash
 agent-privacy-guard inspect --input examples/prompt.txt --target claude_api
@@ -425,7 +431,8 @@ internal/
   infra/
   interface/
 adapters/
-configs/
+templates/
+  agent-privacy-guard/
 hooks/
 examples/
 scripts/

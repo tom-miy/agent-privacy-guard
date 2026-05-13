@@ -10,6 +10,8 @@ Installs agent-privacy-guard policy and hook files into a target repository.
 
 This does not copy the CLI source code. It creates:
   .agent-privacy-guard/policy.yaml
+  .agent-privacy-guard/mcp-trust.yaml
+  .agent-privacy-guard/entities.local.example.yaml
   .agent-privacy-guard/hooks/prehook.sh
   .agent-privacy-guard/hooks/posthook.sh
 
@@ -52,10 +54,12 @@ done
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 target_dir="$(cd "$target_dir" && pwd)"
 
-source_policy="$script_dir/configs/policy.yaml"
+source_policy="$script_dir/templates/agent-privacy-guard/policy.yaml"
+source_mcp_trust="$script_dir/templates/agent-privacy-guard/mcp-trust.yaml"
 install_dir="$target_dir/.agent-privacy-guard"
 hooks_dir="$install_dir/hooks"
 policy_path="$install_dir/policy.yaml"
+mcp_trust_path="$install_dir/mcp-trust.yaml"
 entity_example_path="$install_dir/entities.local.example.yaml"
 gitignore_path="$install_dir/.gitignore"
 prehook_path="$hooks_dir/prehook.sh"
@@ -66,9 +70,13 @@ if [[ ! -f "$source_policy" ]]; then
   echo "error: source policy not found: $source_policy" >&2
   exit 1
 fi
+if [[ ! -f "$source_mcp_trust" ]]; then
+  echo "error: source MCP trust template not found: $source_mcp_trust" >&2
+  exit 1
+fi
 
 if [[ "$force" != "true" ]]; then
-  for path in "$policy_path" "$entity_example_path" "$gitignore_path" "$prehook_path" "$posthook_path"; do
+  for path in "$policy_path" "$mcp_trust_path" "$entity_example_path" "$gitignore_path" "$prehook_path" "$posthook_path"; do
     if [[ -e "$path" ]]; then
       echo "error: $path already exists. Re-run with --force to overwrite." >&2
       exit 1
@@ -78,6 +86,7 @@ fi
 
 mkdir -p "$hooks_dir"
 install -m 0644 "$source_policy" "$policy_path"
+install -m 0644 "$source_mcp_trust" "$mcp_trust_path"
 perl -pi -e 's/entities\.local\.example\.yaml/entities.local.yaml/g' "$policy_path"
 
 cat > "$entity_example_path" <<'ENTITIES'
@@ -125,6 +134,7 @@ chmod +x "$prehook_path" "$posthook_path"
 cat <<SUMMARY
 Installed agent-privacy-guard integration files:
   $policy_path
+  $mcp_trust_path
   $entity_example_path
   $gitignore_path
   $prehook_path

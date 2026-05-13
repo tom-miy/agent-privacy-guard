@@ -45,6 +45,9 @@ developer writes prompt / agent collects context
 ```text
 .agent-privacy-guard/
   policy.yaml
+  mcp-trust.yaml
+  entities.local.example.yaml
+  .gitignore
   hooks/
     prehook.sh
     posthook.sh
@@ -53,7 +56,7 @@ developer writes prompt / agent collects context
 この repository の sample から流用するなら、必要なのは次の最小セットです。
 
 ```text
-configs/policy.yaml
+templates/agent-privacy-guard/policy.yaml
 hooks/claude-code-prehook.sh
 hooks/agent-posthook.sh
 ```
@@ -61,14 +64,14 @@ hooks/agent-posthook.sh
 必要に応じて追加します。
 
 ```text
-configs/mcp-trust.yaml
+templates/agent-privacy-guard/mcp-trust.yaml
 AGENTS.md
 CLAUDE.md
 .cursorrules
 .codex/config.toml
 ```
 
-`configs/mcp-trust.yaml` は通常の MCP server 起動 config ではなく、MCP server ごとの trust metadata です。詳しくは [mcp-trust-config.ja.md](mcp-trust-config.ja.md) を参照してください。
+`templates/agent-privacy-guard/mcp-trust.yaml` は通常の MCP server 起動 config ではなく、MCP server ごとの trust metadata です。詳しくは [mcp-trust-config.ja.md](mcp-trust-config.ja.md) を参照してください。
 
 ## What Not To Copy
 
@@ -101,6 +104,9 @@ your-app/
 
   .agent-privacy-guard/
     policy.yaml
+    mcp-trust.yaml
+    entities.local.example.yaml
+    .gitignore
     hooks/
       prehook.sh
       posthook.sh
@@ -109,9 +115,11 @@ your-app/
 この repository の sample を使うなら、次のように対応します。
 
 ```text
-configs/policy.yaml              -> .agent-privacy-guard/policy.yaml
-hooks/claude-code-prehook.sh     -> .agent-privacy-guard/hooks/prehook.sh
-hooks/agent-posthook.sh          -> .agent-privacy-guard/hooks/posthook.sh
+templates/agent-privacy-guard/policy.yaml                 -> .agent-privacy-guard/policy.yaml
+templates/agent-privacy-guard/mcp-trust.yaml              -> .agent-privacy-guard/mcp-trust.yaml
+templates/agent-privacy-guard/entities.local.example.yaml -> .agent-privacy-guard/entities.local.example.yaml
+hooks/claude-code-prehook.sh                              -> .agent-privacy-guard/hooks/prehook.sh
+hooks/agent-posthook.sh                                   -> .agent-privacy-guard/hooks/posthook.sh
 ```
 
 hook 内の `--policy` path も合わせて変更します。
@@ -130,7 +138,7 @@ agent-privacy-guard sanitize \
 | Area | Purpose |
 |---|---|
 | `cmd/`, `internal/` | `agent-privacy-guard` CLI 本体の実装。 |
-| `configs/`, `hooks/`, `examples/`, `docs/` | 利用例、policy sample、integration sample。 |
+| `templates/agent-privacy-guard/`, `hooks/`, `examples/`, `docs/` | 利用例、policy sample、integration sample。 |
 
 通常の application repository に必要なのは後者の一部だけです。
 

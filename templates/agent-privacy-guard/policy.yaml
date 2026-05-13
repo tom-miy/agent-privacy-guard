@@ -109,7 +109,7 @@ entity_files:
 # Security note:
 # - The examples below are fake demo values.
 # - Do not commit real customer names or sensitive internal identifiers here.
-# - Put real rules in entity_files such as configs/entities.local.yaml.
+# - Put real rules in entity_files such as .agent-privacy-guard/entities.local.yaml.
 #
 # scope is reserved for future use. Use "prompt" for now.
 entities:

@@ -1,6 +1,6 @@
 # Policy Config
 
-`configs/policy.yaml` は `agent-privacy-guard` の中心設定です。
+`templates/agent-privacy-guard/policy.yaml` は `agent-privacy-guard` の中心設定です。
 
 この file では次を定義します。
 
@@ -104,9 +104,9 @@ entity_files:
   - entities.local.yaml
 ```
 
-path は `configs/policy.yaml` からの相対 path として解決されます。上の例では `configs/entities.local.yaml` を読みます。
+path は policy file からの相対 path として解決されます。`install.sh` 後の policy は `.agent-privacy-guard/policy.yaml` にあるため、上の例では `.agent-privacy-guard/entities.local.yaml` を読みます。
 
-この reference repository の `configs/policy.yaml` は validate を通すために `entities.local.example.yaml` を参照しています。`install.sh` で対象 repository に適用すると `entities.local.yaml` 参照へ書き換えられます。
+この reference repository の `templates/agent-privacy-guard/policy.yaml` は validate を通すために `entities.local.example.yaml` を参照しています。`install.sh` で対象 repository に適用すると `entities.local.yaml` 参照へ書き換えられます。
 
 local file の layout:
 
@@ -117,7 +117,7 @@ entities:
     scope: prompt
 ```
 
-通常の application repository では、installer が `.agent-privacy-guard/entities.local.example.yaml` と `.agent-privacy-guard/.gitignore` を作成します。必要になった時点で example をコピーするか、暗号化 source から `.agent-privacy-guard/entities.local.yaml` を生成してください。sample として [../configs/entities.local.example.yaml](../configs/entities.local.example.yaml) も用意しています。
+通常の application repository では、installer が `.agent-privacy-guard/entities.local.example.yaml` と `.agent-privacy-guard/.gitignore` を作成します。必要になった時点で example をコピーするか、暗号化 source から `.agent-privacy-guard/entities.local.yaml` を生成してください。sample として [../templates/agent-privacy-guard/entities.local.example.yaml](../templates/agent-privacy-guard/entities.local.example.yaml) も用意しています。
 
 暗号化して管理したい場合は、暗号化済み file を git 管理し、復号した一時 file を `entity_files` で参照する運用にしてください。この minimal implementation は暗号化 / 復号自体は行いません。
 
@@ -138,7 +138,7 @@ entities:
 agent-privacy-guard preview --input examples/prompt.txt --target claude_api
 ```
 
-本物の顧客名の場合は、`configs/policy.yaml` ではなく `configs/entities.local.yaml` に追加してください。
+本物の顧客名の場合は、`templates/agent-privacy-guard/policy.yaml` ではなく `.agent-privacy-guard/entities.local.yaml` に追加してください。
 
 ## Built-in Secret Detectors
 
