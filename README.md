@@ -393,6 +393,7 @@ Detected:
 | `scripts/check-sensitive-files.sh` | Check that blocks accidental commits of local entity / mapping files. |
 | `lefthook.yml` | Lefthook config for repository-specific pre-commit checks. |
 | `docs/commit-checks.md` | Commit check documentation. |
+| `docker/cli/Dockerfile` | Dockerfile for running the CLI as a container image. |
 | `examples/prompt.txt` | Sample outbound prompt containing customer names, an internal URL, an email, an AWS key, and a local path. |
 | `examples/agent-response.txt` | Sample agent response containing risky shell commands for `posthook` detection. |
 | `hooks/claude-code-prehook.sh` | Sample Claude Code prehook that sanitizes outbound prompt text. |

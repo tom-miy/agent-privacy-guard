@@ -83,7 +83,7 @@ examples/
 scripts/
 go.mod
 go.sum
-Dockerfile
+docker/cli/Dockerfile
 mise.toml
 ```
 

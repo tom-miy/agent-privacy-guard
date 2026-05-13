@@ -393,6 +393,7 @@ Detected:
 | `scripts/check-sensitive-files.sh` | local entity / mapping file の誤 commit を防ぐ check。 |
 | `lefthook.yml` | pre-commit で repository 固有 check を走らせる Lefthook 設定。 |
 | `docs/commit-checks.ja.md` | commit 前 check の説明。 |
+| `docker/cli/Dockerfile` | CLI を container image として実行するための Dockerfile。 |
 | `examples/prompt.txt` | customer name、internal URL、email、AWS key、local path を含む sample outbound prompt。 |
 | `examples/agent-response.txt` | `posthook` detection 用の risky shell command を含む sample agent response。 |
 | `hooks/claude-code-prehook.sh` | outbound prompt を sanitize する Claude Code 用 sample prehook。 |
